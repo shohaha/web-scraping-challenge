@@ -36,3 +36,4 @@ def scrape():
 # Set debug to false to prevent web scrape inturruptions
 if __name__ == "__main__":
     app.run(debug=False, use_reloader=False, passthrough_errors=True)
+    

@@ -6,12 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <style>
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 16px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
         body {
             background-color: whitesmoke;
         }
 
         .jumbotron {
-            background-color: Thistle;
+            background-color: mistyrose;
             color: white;
         }
 
@@ -34,10 +49,13 @@
     </div>
     <div class="container">
         <div class="row">
+            <div class="col-12"></div>
                 <h2>Latest Mars News</h2>
                 <hr>
-                <h6>{{mars_info.news_title}}</h6>
-                <p>{{mars_info.news_p}}</p>
+                <h4>{{mars_info.news_title}}</h4>
+                <br>
+                <p>{{mars_info.news_paragraph}}</p>
+        </div>
         </div>
         <br>
         <div class="row">
@@ -49,7 +67,8 @@
             <div class="col-6">
                 <h2>Mars Facts</h2>
                 <hr>
-                {{mars_info.mars_facts|safe}}
+                <div class="dataframe"> {{mars_info.facts|safe}} 
+                </div>
                 </hr>
             </div>
         </div>
@@ -61,7 +80,7 @@
             </div>
         </div>
         <div class="row">
-            {% for image_url in mars_info.hemispheres %}
+            {% for image_url in mars_info.hemisphere_image_urls %}
             <div class="col-3 card">
                 <img class="wide-image" src={{ mars_info.hemispheres }} alt={{ title.img_url }}>
                 <div class="card-body">
