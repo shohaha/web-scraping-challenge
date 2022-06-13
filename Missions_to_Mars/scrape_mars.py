@@ -40,12 +40,12 @@ def scrape_mars_space_featured_imgs(browser):
 
 def scrape_mars_facts():
     url = "https://galaxyfacts-mars.com"
+    
+    tables=pd.read_html(url)
+    mars_facts=tables[1]
+    
+    mars_facts.columns=["Description", "Values"]
 
-    try:     
-        tables=pd.read_html(url)
-        mars_facts=tables[1]
-    except:
-        return None
     return mars_facts.to_html()
 
 def scrape_mars_hemispheres(browser):
@@ -60,26 +60,26 @@ def scrape_mars_hemispheres(browser):
     sites = []
 
     for div in div_list:
-        site = div.find("a", class_="product-item")["href"]    
+        site = div.find("a", class_="product-item")["href"]   
         sites.append(site)
 
         hemisphere_image_urls = []
 
     for site in sites:
         try:
-            url = mars_hem_url + site
+            url = url + site
             browser.visit(url)
             html = browser.html
         
             soup = bs(html, "html.parser")
         
-            img_url_ending = soup.body.find("img", class_="wide-image")["src"]
+            img_url_ending = soup.find("img", class_="wide-image")["src"]
         
             img_url = mars_hem_url + img_url_ending
         
-            title = soup.body.find("h2", class_="title").text.strip()[:-9]
+            title = soup.find("h2", class_="title").text.strip()[:-9]
         
-            hemisphere_image_urls.append({"title": title, "img_url": img_url})
+            hemisphere_image_urls.append({"title": title, "img_url" :img_url})
         except:
             return None
     return hemisphere_image_urls
@@ -99,7 +99,6 @@ def scrape():
         "hemispheres": hemispheres,
         "facts": mars_facts
     }
-
 
 if __name__ == "__main__":
     print(scrape())

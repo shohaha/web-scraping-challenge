@@ -26,7 +26,7 @@
         }
 
         .jumbotron {
-            background-color: mistyrose;
+            background-color: powderblue;
             color: white;
         }
 
@@ -80,11 +80,11 @@
             </div>
         </div>
         <div class="row">
-            {% for image_url in mars_info.hemisphere_image_urls %}
+            {% for img_url in mars_info.hemisphere_image_urls %}
             <div class="col-3 card">
-                <img class="wide-image" src={{ mars_info.hemispheres }} alt={{ title.img_url }}>
+                <img class="wide-image" src={{ mars_info.hemisphere_image_urls }}>
                 <div class="card-body">
-                    <h3 class="card-title">{{ mars_info.hemispheres.title }}</h3>
+                    <h2 class="title">{{ mars_info.hemisphere_image_urls }}</h3>
                 </div>
             </div>
             {% endfor %}
