@@ -48,40 +48,106 @@ def scrape_mars_facts():
 
     return mars_facts.to_html()
 
+# def scrape_mars_hemispheres():
+#     url = "https://marshemispheres.com/"
+#     browser.visit(url)
+#     hemisphere_image_urls = []
+
+#     for i in range(4):
+#         html = browswer.html
+#         soup = bs(html, 'html.parser')
+
+#         title = soup.find_all("h3")[i].get_text()
+#         browswer.find_by_tag("h3")[i].click()
+
+#         html = browswer.html
+#         soup = bs(html, "html.parser")
+
+#         img_url = soup.find("img", class_="wide-image")["src"]
+
+#         hemisphere_image_urls.append({
+#             "title":title,
+#             "img_url": url + img_url    
+#             })
+
+#         browser.back()
+        
+#     title1 = hemisphere_image_urls[0]["title"]
+#     image1 = hemisphere_image_urls[0]["img_url"]
+    
+#     title2 = hemisphere_image_urls[1]["title"]
+#     image2 = hemisphere_image_urls[1]["img_url"]
+
+#     title3 = hemisphere_image_urls[2]["title"]
+#     image3 = hemisphere_image_urls[2]["img_url"]
+
+#     title4 = hemisphere_image_urls[3]["title"]
+#     image4 = hemisphere_image_urls[3]["img_url"]
+
+
+# def scrape_mars_hemispheres(browser):
+#     url = "https://marshemispheres.com/"
+#     browser.visit(url)
+
+#     html = browser.html
+#     soup = bs(html, 'html.parser')
+
+#     div_list = soup.body.find_all("div", class_="description")
+
+#     sites = []
+
+#     for div in div_list:
+#         site = div.find("a", class_="product-item")["href"]   
+#         sites.append(site)
+
+#         hemisphere_image_urls = []
+  
+#     for site in sites:
+#         #try:
+#         browser.visit(url + site)
+    
+#         img_url_ending = soup.find("img", class_="wide-image")["src"]
+
+#         img_url = mars_hem_url + img_url_ending
+        
+#         soup = bs(html, "html.parser")
+#         img_url_ending = soup.body.find("img", class_="wide-image")["src"]
+#         img_url = url + site + img_url_ending
+        
+#         # Append dictionary for title and image url's to list
+        
+#         hemisphere_image_urls.append({"title": title, "img_url": img_url})
+  
+#         title = soup.find("h2", class_="title").get_text()
+#         print("title: ", title)
+#         sample_element = soup.find("a", text="Sample")["href"]
+#         print("sample element: ", sample_element)
+        
+#         hemisphere_image_urls.append({"title": title, "img_url" :sample_element})
+#         browser.back()
+
+#         #except:
+#         #    return None
+#     return hemisphere_image_urls
+
 def scrape_mars_hemispheres(browser):
     url = "https://marshemispheres.com/"
+
     browser.visit(url)
 
     html = browser.html
     soup = bs(html, 'html.parser')
 
-    div_list = soup.body.find_all("div", class_="description")
+    results = soup.find_all('div', class_='item')
 
-    sites = []
+    hemisphere_image_urls=[]
 
-    for div in div_list:
-        site = div.find("a", class_="product-item")["href"]   
-        sites.append(site)
+    for result in results:
+        title = result.find('h3').get_text()
+        img_url = result.find('img', class_='thumb')['src']
+        img_url = url + img_url
+        hemisphere_image_urls.append({'title': title, 'img_url': img_url})
 
-        hemisphere_image_urls = []
-
-    for site in sites:
-        try:
-            url = url + site
-            browser.visit(url)
-            html = browser.html
-        
-            soup = bs(html, "html.parser")
-        
-            img_url_ending = soup.find("img", class_="wide-image")["src"]
-        
-            img_url = mars_hem_url + img_url_ending
-        
-            title = soup.find("h2", class_="title").text.strip()[:-9]
-        
-            hemisphere_image_urls.append({"title": title, "img_url" :img_url})
-        except:
-            return None
     return hemisphere_image_urls
 
 def scrape():
