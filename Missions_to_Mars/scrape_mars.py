@@ -162,7 +162,7 @@ def scrape():
         "news_title": news_title,
         "news_paragraph": news_p, 
         "featured_images": featured_imgs,
-        "hemispheres": hemispheres,
+        "hemisphere_image_urls": hemispheres,
         "facts": mars_facts
     }
 

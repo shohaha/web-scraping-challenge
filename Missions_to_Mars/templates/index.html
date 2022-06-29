@@ -52,9 +52,9 @@
             <div class="col-12"></div>
                 <h2>Latest Mars News</h2>
                 <hr>
-                <h4>{{mars_info.news_title}}</h4>
+                <h4>{{mars_data.news_title}}</h4>
                 <br>
-                <p>{{mars_info.news_paragraph}}</p>
+                <p>{{mars_data.news_paragraph}}</p>
         </div>
         </div>
         <br>
@@ -62,12 +62,12 @@
             <div class="col-6">
                 <h2>Featured Mars Image</h2>
                 <hr>
-                <img class="img-fluid rounded" src= {{ mars_info.featured_images }} alt="Featured Mars Image">
+                <img class="img-fluid rounded" src= {{ mars_data.featured_images }} alt="Featured Mars Image">
             </div>
             <div class="col-6">
                 <h2>Mars Facts</h2>
                 <hr>
-                <div class="dataframe"> {{mars_info.facts|safe}} 
+                <div class="dataframe"> {{mars_data.facts|safe}} 
                 </div>
                 </hr>
             </div>
@@ -80,14 +80,16 @@
             </div>
         </div>
         <div class="row">
-            {% for img_url in mars_info.hemisphere_image_urls %}
-            <div class="col-3 card">
-                <img class="wide-image" src={{ mars_info.hemisphere_image_urls }}>
+            {% if mars_data.hemisphere_image_urls %}
+            {% for hemispheres in mars_data.hemisphere_image_urls %}
+            <div class="card p-4">
+                <img class="card-img-top" src={{ hemispheres.img_url }}>
                 <div class="card-body">
-                    <h2 class="title">{{ mars_info.hemisphere_image_urls }}</h3>
+                    <h2 class="title">{{ hemispheres.mars_data.title }}</h2>
                 </div>
             </div>
             {% endfor %}
+            {% endif %}
         </div>
     </div>
 
