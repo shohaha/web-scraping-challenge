@@ -38,7 +38,7 @@ def scrape():
     #planet_mars = scrape_mars.scrape()
 
     # # Update the Mongo database using update and upsert=True
-    mongo.db.collection.update_one({}, {"$set": mars_scrape}, upsert=True)
+    mongo.db.collection.update_many({}, {"$set": mars_scrape}, upsert=True)
 
     # Redirect back to home page
     return redirect("/")
