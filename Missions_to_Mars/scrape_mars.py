@@ -2,10 +2,33 @@
 import pandas as pd
 import requests
 import time
+import datetime as dt
 from splinter import Browser
 from bs4 import BeautifulSoup as bs
 from webdriver_manager.chrome import ChromeDriverManager
 
+# Create function to hold scrape items
+def scrape_all():
+    executable_path = {'executable_path': ChromeDriverManager().install()}
+    browser = Browser('chrome', **executable_path, headless=False)
+
+    news_title, news_p =  scrape_mars_news(browser)
+    hemisphere_image_urls = get_hemispheres(browser)
+
+    # Scrapped items 
+    data = {
+        "news_title": news_title,
+        "news_p": news_p,
+        "featured_image": scrape_featured_images(browser),
+        "facts": scrape_mars_facts(),
+        "hemispheres": get_hemispheres(browser), 
+        "last_modified": dt.datetime.now()
+    }
+    # Quit browser and return web scrape data
+    browser.quit()
+    return data
+
+############ News Title & Paragraph ############
 
 def scrape_mars_news(browser):
     url = "https://redplanetscience.com/"
@@ -21,9 +44,12 @@ def scrape_mars_news(browser):
         news_p = element.find("div", class_="article_teaser_body").get_text()
     except:
         return None, None
+    
     return news_title, news_p
 
-def scrape_mars_space_featured_imgs(browser):
+############ Featured Image ############
+
+def scrape_featured_images(browser):
     url = "https://spaceimages-mars.com" 
     browser.visit(url)
 
@@ -38,133 +64,51 @@ def scrape_mars_space_featured_imgs(browser):
         return None
     return f"{url}/{img_url_path}"
 
+############ Scrape Mars news title and paragraph ############
+
 def scrape_mars_facts():
     url = "https://galaxyfacts-mars.com"
-    
-    tables=pd.read_html(url)
-    mars_facts=tables[1]
-    
-    mars_facts.columns=["Description", "Values"]
 
-    return mars_facts.to_html()
+    try:
+        df = pd.read_html(url)[0]
+        df.columns = ["Description", "Mars", "Earth"]
+        df.set_index("Description", inplace=True)
+        return df.to_html(classes="table table-stripped")
+    except:
+        return None
 
-# def scrape_mars_hemispheres():
-#     url = "https://marshemispheres.com/"
-#     browser.visit(url)
-#     hemisphere_image_urls = []
+############ Hemisphere and Title ############
 
-#     for i in range(4):
-#         html = browswer.html
-#         soup = bs(html, 'html.parser')
-
-#         title = soup.find_all("h3")[i].get_text()
-#         browswer.find_by_tag("h3")[i].click()
-
-#         html = browswer.html
-#         soup = bs(html, "html.parser")
-
-#         img_url = soup.find("img", class_="wide-image")["src"]
-
-#         hemisphere_image_urls.append({
-#             "title":title,
-#             "img_url": url + img_url    
-#             })
-
-#         browser.back()
-        
-#     title1 = hemisphere_image_urls[0]["title"]
-#     image1 = hemisphere_image_urls[0]["img_url"]
-    
-#     title2 = hemisphere_image_urls[1]["title"]
-#     image2 = hemisphere_image_urls[1]["img_url"]
-
-#     title3 = hemisphere_image_urls[2]["title"]
-#     image3 = hemisphere_image_urls[2]["img_url"]
-
-#     title4 = hemisphere_image_urls[3]["title"]
-#     image4 = hemisphere_image_urls[3]["img_url"]
-
-
-# def scrape_mars_hemispheres(browser):
-#     url = "https://marshemispheres.com/"
-#     browser.visit(url)
-
-#     html = browser.html
-#     soup = bs(html, 'html.parser')
-
-#     div_list = soup.body.find_all("div", class_="description")
-
-#     sites = []
-
-#     for div in div_list:
-#         site = div.find("a", class_="product-item")["href"]   
-#         sites.append(site)
-
-#         hemisphere_image_urls = []
-  
-#     for site in sites:
-#         #try:
-#         browser.visit(url + site)
-    
-#         img_url_ending = soup.find("img", class_="wide-image")["src"]
-
-#         img_url = mars_hem_url + img_url_ending
-        
-#         soup = bs(html, "html.parser")
-#         img_url_ending = soup.body.find("img", class_="wide-image")["src"]
-#         img_url = url + site + img_url_ending
-        
-#         # Append dictionary for title and image url's to list
-        
-#         hemisphere_image_urls.append({"title": title, "img_url": img_url})
-  
-#         title = soup.find("h2", class_="title").get_text()
-#         print("title: ", title)
-#         sample_element = soup.find("a", text="Sample")["href"]
-#         print("sample element: ", sample_element)
-        
-#         hemisphere_image_urls.append({"title": title, "img_url" :sample_element})
-#         browser.back()
-
-#         #except:
-#         #    return None
-#     return hemisphere_image_urls
-
-def scrape_mars_hemispheres(browser):
+def get_hemispheres(browser):
     url = "https://marshemispheres.com/"
 
-    browser.visit(url)
-
-    html = browser.html
-    soup = bs(html, 'html.parser')
-
-    results = soup.find_all('div', class_='item')
+    browser.visit(url + "index.html")
 
     hemisphere_image_urls=[]
 
-    for result in results:
-        title = result.find('h3').get_text()
-        img_url = result.find('img', class_='thumb')['src']
-        img_url = url + img_url
-        hemisphere_image_urls.append({'title': title, 'img_url': img_url})
-
+    for i in range(4):
+        browser.find_by_css("a.product-item img")[i].click()
+        data = _scrape_hemisphere(browser.html)
+        data["img_url"] = url + data["img_url"]
+        hemisphere_image_urls.append(data)
+        browser.back()
+        
     return hemisphere_image_urls
 
-def scrape():
-    executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False)
-    news_title, news_p = scrape_mars_news(browser)
-    featured_imgs = scrape_mars_space_featured_imgs(browser)
-    hemispheres = scrape_mars_hemispheres(browser)
-    mars_facts = scrape_mars_facts()
-    browser.quit()
+def _scrape_hemisphere(html_text):
+    soup = bs(html_text, 'html.parser')
+
+    try:
+        title = soup.find("h2", class_="title").get_text()
+        sample_element = soup.find("a", text="Sample").get("href")
+    except:
+        title, sample_element = None, None
+
     return {
-        "news_title": news_title,
-        "news_paragraph": news_p, 
-        "featured_images": featured_imgs,
-        "hemisphere_image_urls": hemispheres,
-        "facts": mars_facts
+        "title": title,
+        "img_url": sample_element
     }
 
+# End scrape and print all
 if __name__ == "__main__":
-    print(scrape())
+    print(scrape_all())

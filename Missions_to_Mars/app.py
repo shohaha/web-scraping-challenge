@@ -17,11 +17,6 @@ def home():
 
     # Find record of data from mongo database
     mars_data = mongo.db.mars_data.find_one()
-    #if mars_data.hemisphere_image_urls is None:
-    #    return redirect("/scrape")
-
-    print("mars data: ", mars_data)
-    print("keys: ", mars_data.keys())
 
     # Return template and data
     return render_template("index.html", mars_data=mars_data)
@@ -30,18 +25,12 @@ def home():
 @app.route("/scrape")
 def scrape():
 
-    mars_app = mongo.db.mars_data
-    mars_scrape = scrape_mars.scrape()
-    #mars_app.update_one({}, mars_scrape, upsert=True)
-    
-    # # Run the scrape function
-    #planet_mars = scrape_mars.scrape()
-
-    # # Update the Mongo database using update and upsert=True
-    mongo.db.collection.update_many({}, {"$set": mars_scrape}, upsert=True)
+    mars_data = mongo.db.mars_data
+    mars_scrape = scrape_mars.scrape_all()
+    mars_data.update_many({}, {"$set" : mars_scrape}, upsert=True)
 
     # Redirect back to home page
-    return redirect("/")
+    return redirect("/", code=302)
 
 # Set debug to false to prevent web scrape inturruptions
 if __name__ == "__main__":
