@@ -9,6 +9,10 @@ This assignment is divided into three parts:
   <li>Final Product</li>
 </oi>
 
+## Preview of Final Product
+
+https://user-images.githubusercontent.com/96545188/178827038-3882f658-5d88-4bc0-93e4-416bdc4cadcd.mp4
+
 ## Part 1: Scraping
 
 Complete initial scraping using `Jupyter Notebook`, `BeautifulSoup`, `Pandas`, and `Requests/Splinter`.
